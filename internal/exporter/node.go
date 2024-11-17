@@ -543,6 +543,10 @@ func (exp *nodeExporter) updateSensors() {
 		logging.Warning("get sensors: %v", err)
 	}
 	for _, sensor := range sensors {
+		if sensor.Temperature > 150 {
+			logging.Debug("sensor % temp reading data %f incorrect,skip.", sensor.SensorKey, sensor.Temperature)
+			continue
+		}
 		labels := prometheus.Labels{"sensor_name": sensor.SensorKey}
 		labels["feature_name"] = "temperature"
 		exp.sensors.With(labels).Set(sensor.Temperature)
